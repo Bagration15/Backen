@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo:6.0
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+  backend:
+    build: ./backend
+    command: npm run start:dev
+    env_file:
+      - ./backend/.env.example
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+  frontend:
+    build: ./frontend
+    command: npm run dev -- --host
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+volumes:
+  mongo-data:
